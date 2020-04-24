@@ -1,0 +1,7 @@
+#!/bin/sh -e
+sudo gpsd /dev/ttyAMA0 -F /var/run/gpsd.sock
+/home/tracker/wvdialstart.sh&
+/home/tracker/trackstart.sh&
+/home/tracker/vigila.sh&
+
+exit 0
