@@ -20,9 +20,10 @@ hostRemoto="canmorras.duckdns.org"
 port=8086
 MAXREG=1500 #numero max de puntos (orresponde aprox a 10M de fichero, que es el autentico maximo )
 nombreFichero= "track.kml"
-dispositivo='GPS:BMW-0600HTH'
-baseDeDatos='maquinas'
-laMeasurement='gps'
+dispositivo='GPS'
+location='BMW-0600HTH'
+baseDeDatos='iotdb'
+laMeasurement='GPS'
 
 preIcono='"><IconStyle><scale>0.5</scale>'+\
           '<Icon><href>http://labs.google.com/ridefinder/images/'
@@ -99,6 +100,8 @@ if __name__ == "__main__":
                             help='nombre de la medida (measurement name).')                                                        
     parser.add_argument('-d', '--dispositivo', nargs='?', default=dispositivo,
                             help='Device ID.') 
+    parser.add_argument('-l', '--location', nargs='?', default=location,
+                            help='Device ID.')    
     parser.add_argument('-i', '--inicial', nargs='?', required=True,
                             help='fecha inicial. aaaa-mm-dd')                          
     parser.add_argument('-f', '--final', nargs='?', required=True,
@@ -106,8 +109,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     #llamada por defecto: creakml.py -i 2019-06-11 -f 2019-06-12 -b maquinas -m gps -d GPS:BMW-0600HTH
     cliente = InfluxDBClient(host, port, args.user, args.password, args.dbname)
-    queryBusca=("select dia,hora,lon,lat,speed from %s where deviceId='%s' and time>='%s' and time<='%s' ")\
-                 % (args.measurement, args.dispositivo, args.inicial, args.final)
+    queryBusca=("select dia,hora,lon,lat,speed from %s where deviceId= '%s' and location= '%s'and time>= '%s' and time<='%s' ")\
+                 % (args.measurement, args.dispositivo,args.location, args.inicial, args.final)
     print("query busqueda = ",queryBusca)
     trazaPuntos(cliente,queryBusca,nombreFichero)
 

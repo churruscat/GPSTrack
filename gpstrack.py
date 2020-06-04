@@ -42,14 +42,14 @@ class LeeGPS(threading.Thread):
 def fijaPosicion():
     i=0
     while (gpsd.fix.mode==0 or gpsd.fix.mode==1):   # espero a que el GPS fije posicion
-        ahoranofix=time()-altzone
+        ahoranofix=time()    # si le resto altzone paso a hora local
         print '=> no fix.  ',ahoranofix,' modo= ', gpsd.fix.mode
         sleep(5)
     return True    
 
 def preparaJSON(tipo):
     if tipo=="localizacion":
-        secs,usecs=divmod(time()-altzone,1)
+        secs,usecs=divmod(time(),1)   # si a time() le restara altzone tendría la hora local
         gpsdata={ "hora":str(int(secs))+str(int(usecs*1000000000)),
           "lat": gpsd.fix.latitude,
           "lon": gpsd.fix.longitude,
