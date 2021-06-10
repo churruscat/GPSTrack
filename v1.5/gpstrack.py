@@ -16,8 +16,8 @@ import threading
 import luismqtt
 
 ##################  VALORES PERSONALIZADOS  ################
-V_MIN = 0.5 # m/s #velocidad minima para enviar datos m/s
-tEnviaDatos =10   #cada cuanto envio datos
+V_MIN = 1.6 # m/s #velocidad minima para enviar datos m/s
+tEnviaDatos =2   #cada cuanto envio datos
 nEnviosaCero=3   # numero de registros que envio cuando V<VMin
 tiempoParado=300 # a los 5 min de estar parado, envio un registro
 ############### FIN DE VALORES PERSONALIZADOS  #############
@@ -98,6 +98,8 @@ if __name__ == '__main__':
 
             sleep(2) 
 
+            '''
+'''
     except (KeyboardInterrupt, SystemExit): #when you press ctrl+c
         print "\nKilling Thread..."
         gpsp.running = False
