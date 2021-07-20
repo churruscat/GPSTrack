@@ -1,5 +1,7 @@
 #!/usr/bin/python
-# Morrastronix (V1.0) Agosto 2017 V.10
+# Morrastronix (V1.0) Agosto 2017 
+#by chuRRuscat
+#  V1.2  adden gpstrack.conf
 # https://github.com/ukyg9e5r6k7gubiekd6/gpsd/blob/master/gps/gps.py
 # doc en  https://fossies.org/dox/gpsd-3.16/gps_8py_source.html
 
