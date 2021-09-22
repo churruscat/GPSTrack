@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
+		<title>Track</title>
+		<style>
+			/* Always set the map height explicitly to define the size of the div
+			 * element that contains the map. */
+			#map {
+				height: 100%;
+			}
+			/* Optional: Makes the sample page fill the window. */
+			html, body {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+		</style>
+		<form name="entrada" method="get" action="http://pagina.com/send.php">
+			<!-- Campo de entrada de fecha -->
+			Selecciona la fecha inicial:
+			<input type="date" name="fecha_iniName"  >
+			<p>Selecciona la fecha final:
+			<input type="date" name="fecha_finName"  >
+			
+			<!-- Lista de selección -->
+			<p>Dispositivo:
+			<select name="DeviceIdName">
+				<!-- Opciones de la lista -->
+				<option value="GPS:BMW-0600HTH" selected>GPS:BMW-0600HTH</option>
+				<!--<option value="2" >Opción 2</option> 
+				<option value="3">Opción 3</option> -->
+			</select> 
+			<p>                                
+			<button type="button" onclick="arranca()">Valeng</button>
+		</form>
+	</head>
+	<body> 
+		<div id="map" ></div>
+		<script 
+    		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABxmXWRAd-BkCfK3xpfQeC6WtITQV2wYo">
+    	</script> 
+		<script>
+			file_id='';
+			function arranca() {	
+				documentId='nada';
+				formEntrada=document.forms.entrada;
+				fecha_ini=formEntrada.elements.fecha_iniName.value;
+				fecha_fin=formEntrada.elements.fecha_finName.value;
+				deviceId=formEntrada.elements.DeviceIdName.value;
+				console.log("fecha_ini="+fecha_ini);
+				console.log('fecha_fin='+fecha_fin);
+				console.log("deviceId="+deviceId);      
+				const Httpcrea = new XMLHttpRequest();
+				const Httpsube = new XMLHttpRequest();
+				urlcrea='http://192.168.1.11:5000/creakml/{"fecha_ini":"'+fecha_ini+'","fecha_fin":"'+fecha_fin+
+					'","deviceId":"'+deviceId+'"}';	
+				Httpcrea.open("POST", urlcrea);
+				Httpcrea.send(); 
+
+				function initMap() {
+					console.log('Dentro de Initmap');
+					var map = new google.maps.Map(document.getElementById('map'), {
+						zoom: 12,
+						center: {lat: 40.45, lng: -3.8}
+					}); 
+					console.log('Fin de Initmap');
+					var georssLayer = new google.maps.KmlLayer({
+						url: 'https://drive.google.com/uc?export=download&id='+JSON.parse(Httpsube.responseText).id,
+				  	});
+				  	georssLayer.setMap(map);
+				}
+
+				Httpcrea.onreadystatechange=function(){
+					if (this.readyState==4 && this.status==200) {
+						console.log(Httpcrea.responseText);
+						alert(Httpcrea.responseText)
+						elfichero=JSON.parse(Httpcrea.responseText).fichero;
+						const urlsube='http://192.168.1.11:5000/subekml/{"fichero":"'+elfichero+'"}';
+						Httpsube.open("POST", urlsube);
+						Httpsube.send();
+					}
+				}
+				// cuando ya ha subido el fichero, hay que presentarlo 
+				Httpsube.onreadystatechange=function(){ 
+					if (this.readyState==4 && this.status==200) {
+						file_id=JSON.parse(Httpsube.responseText).id;
+						console.log(Httpsube.responseText);
+						console.log('Ha subido fileid='+JSON.parse(Httpsube.responseText).id);
+						initMap();
+					}
+				}     
+			}   
+		</script> 
+	</body>
+</html>
+
